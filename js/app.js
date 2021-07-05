@@ -5,10 +5,17 @@ let section = document.getElementById('sec-one');
 let leftImageElement = document.getElementById('left-image');
 let rightImageElement = document.getElementById('right-image');
 let centerImageElement = document.getElementById('center-image');
+let indexElement = document.getElementById('index');
 
 let maxAttempts = 25;
 let counter = 0;
 BusMall.globArr = [];
+let arrOfNames = [];
+let arrOfVotes = [];
+let arrOfShown = [];
+let arrOfIndex = [0, 0, 0];
+
+
 
 
 
@@ -18,6 +25,7 @@ function BusMall(name, source,) {
   this.votes = 0;
   this.shown = 0;
   BusMall.globArr.push(this);
+  arrOfNames.push(this.name)
 }
 
 
@@ -59,14 +67,23 @@ function renderImages() {
   rightIndex = generateRandomIndex();
   centerIndex = generateRandomIndex();
 
-  while (leftIndex === rightIndex || leftIndex === centerIndex || rightIndex === centerIndex) {
+
+
+
+
+  while (leftIndex === rightIndex || leftIndex === centerIndex || rightIndex === centerIndex
+    || arrOfIndex.includes(leftIndex) || arrOfIndex.includes(rightIndex) || arrOfIndex.includes(centerIndex)) {
 
     leftIndex = generateRandomIndex();
     rightIndex = generateRandomIndex();
-
+    centerIndex = generateRandomIndex();
 
 
   }
+  arrOfIndex[0] = leftIndex;
+  arrOfIndex[1] = rightIndex;
+  arrOfIndex[2] = centerIndex;
+
 
   BusMall.globArr[leftIndex].shown++;
   BusMall.globArr[rightIndex].shown++;
@@ -112,17 +129,58 @@ function handleClick(event) {
 }
 function handelShow() {
   renderList();
-  btnEl.removeEventListener('click',handelShow);
+  gettingChart();
+  btnEl.removeEventListener('click', handelShow);
 }
 
 function renderList() {
   section.removeEventListener('click', handleClick);
   let ul = document.getElementById('unList');
   for (let i = 0; i < BusMall.globArr.length; i++) {
+    arrOfVotes.push(BusMall.globArr[i].votes)
+    arrOfShown.push(BusMall.globArr[i].shown)
     let li = document.createElement('li');
     ul.appendChild(li);
     li.textContent = `${BusMall.globArr[i].name} has this number of votes ${BusMall.globArr[i].votes} and 
             has this number of shown${BusMall.globArr[i].shown}`
   }
 
+}
+
+
+
+function gettingChart() {
+  let ctx = document.getElementById('myChart')
+  let myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: arrOfNames,
+      datasets: [{
+        label: '# of Votes',
+        data: arrOfVotes,
+        backgroundColor: [
+          'rgba(0,255,0,0.3)',
+        ],
+        borderColor: [
+          'rgb(255,255,0,0.3)',
+        ],
+        borderWidth: 1
+
+
+
+      }, {
+        label: '# of Shown',
+        data: arrOfShown,
+        backgroundColor: [
+          'rgb(255,255,0,0.3)'
+        ],
+        borderColor: [
+          'rgba(0,255,0,0.3)',
+        ],
+        borderWidth: 1
+
+
+      }]
+    },
+  })
 }
