@@ -85,7 +85,7 @@ renderImages();
 
 
 section.addEventListener('click', handleClick);
-
+let btnEl;
 function handleClick(event) {
   counter++;
   if (maxAttempts > counter) {
@@ -96,24 +96,33 @@ function handleClick(event) {
     } else if (event.target.id === 'center-image') {
       BusMall.globArr[centerIndex].votes++;
 
+    } else {
+      counter--;
+      return;
     }
 
     renderImages();
   } else {
-    renderList();
-  }
-  console.log(counter);
-}
+    btnEl = document.getElementById('btn');
+    btnEl.addEventListener('click', handelShow);
+    section.removeEventListener('click', handleClick);
 
+  }
+
+}
+function handelShow() {
+  renderList();
+  btnEl.removeEventListener('click',handelShow);
+}
 
 function renderList() {
   section.removeEventListener('click', handleClick);
   let ul = document.getElementById('unList');
   for (let i = 0; i < BusMall.globArr.length; i++) {
     let li = document.createElement('li');
-    ul.append(li);
+    ul.appendChild(li);
     li.textContent = `${BusMall.globArr[i].name} has this number of votes ${BusMall.globArr[i].votes} and 
             has this number of shown${BusMall.globArr[i].shown}`
   }
-  section.removeEventListener('click', handleClick);
+
 }
