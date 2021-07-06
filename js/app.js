@@ -103,6 +103,7 @@ renderImages();
 
 section.addEventListener('click', handleClick);
 let btnEl;
+
 function handleClick(event) {
   counter++;
   if (maxAttempts > counter) {
@@ -112,18 +113,20 @@ function handleClick(event) {
       BusMall.globArr[rightIndex].votes++;
     } else if (event.target.id === 'center-image') {
       BusMall.globArr[centerIndex].votes++;
+      
 
     } else {
       counter--;
       return;
     }
-
+    saveToLs();
     renderImages();
   } else {
+    
     btnEl = document.getElementById('btn');
     btnEl.addEventListener('click', handelShow);
     section.removeEventListener('click', handleClick);
-
+    
   }
 
 }
@@ -159,7 +162,7 @@ function gettingChart() {
         label: '# of Votes',
         data: arrOfVotes,
         backgroundColor: [
-          'rgba(0,255,0,0.3)',
+          'hsla(0, 100%, 30%, 0.3)',
         ],
         borderColor: [
           'rgb(255,255,0,0.3)',
@@ -172,7 +175,7 @@ function gettingChart() {
         label: '# of Shown',
         data: arrOfShown,
         backgroundColor: [
-          'rgb(255,255,0,0.3)'
+          'rgba(0,0,255,0.3)'
         ],
         borderColor: [
           'rgba(0,255,0,0.3)',
@@ -184,3 +187,24 @@ function gettingChart() {
     },
   })
 }
+
+
+
+
+function saveToLs() {
+  let newArray = JSON.stringify(BusMall.globArr);
+  localStorage.setItem('globArr', newArray);
+}
+
+
+function getFromLs() {
+  let data = localStorage.getItem('globArr')
+  let parsedOrder = JSON.parse(data);
+   if (parsedOrder != null) {
+    BusMall.globArr = parsedOrder
+        
+  };
+};
+
+getFromLs();
+
